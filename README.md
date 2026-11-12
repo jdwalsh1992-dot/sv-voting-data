@@ -2,9 +2,12 @@
 
 An R Shiny app for election results in Arizona's 6th congressional district
 (Sierra Vista, Cochise County) and its neighbors, AZ-7 and AZ-2. It covers
-2016–2024 at district, county and precinct level. All data is static: it's
+2016–2026 at district, county and precinct level. All data is static: it's
 built once into `data/`, and the app makes no data requests at runtime. Only
 the map's background tiles load from the internet.
+
+**Live site:** https://jdwalsh1992-dot.github.io/sv-voting-data/ (the first load
+takes up to a minute while R downloads into your browser).
 
 ## Run
 
@@ -12,6 +15,19 @@ the map's background tiles load from the internet.
 install.packages(c("shiny", "bslib", "dplyr", "tidyr", "ggplot2", "DT",
                    "leaflet", "sf", "plotly"))
 shiny::runApp()
+```
+
+## Rebuild the website
+
+The GitHub Pages site in `docs/` is a [Shinylive](https://posit-dev.github.io/r-shinylive/)
+export: the app runs in the browser with webR, with no server. After changing
+the app or data, rebuild it and commit `docs/`:
+
+```r
+install.packages("shinylive")
+```
+```sh
+Rscript build_site.R
 ```
 
 ## Rebuild the data (optional, needs internet)

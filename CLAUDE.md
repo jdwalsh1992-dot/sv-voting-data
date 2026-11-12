@@ -14,7 +14,14 @@ time. See README.md for the user-facing description and caveats.
 ```sh
 Rscript -e 'shiny::runApp(port = 8765, launch.browser = TRUE)'   # run the app
 Rscript data-raw/build_data.R                                     # rebuild data/ (needs internet, ~1–2 min with cache)
+Rscript build_site.R                                              # rebuild the GitHub Pages site in docs/ (Shinylive)
+Rscript -e 'httpuv::runStaticServer("docs", port = 8008)'          # preview docs/ locally
 ```
+
+**Live site:** https://jdwalsh1992-dot.github.io/sv-voting-data/, served by GitHub Pages from `docs/` on `main`
+(repo `jdwalsh1992-dot/sv-voting-data`, public). `docs/` is generated, so never edit it by hand. Rebuild and commit it
+after any change to `app.R`, `R/` or `data/`, or the live site goes stale. The app runs in webR, so every
+package it uses must exist as a webR binary, and the first load is slow (~170 MB).
 
 There is no test suite. To check the server logic, run `shiny::testServer(shiny::shinyAppDir("."), {...})`.
 Set inputs for every race × mode × level and read `map_data()`, `swing_df()`,
