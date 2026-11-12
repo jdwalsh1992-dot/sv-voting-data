@@ -1,0 +1,17 @@
+year,district,candidate,party,votes,incumbent
+2022,AZ-2,Eli Crane,Republican,174169,FALSE
+2022,AZ-2,Tom O'Halleran,Democratic,149151,TRUE
+2022,AZ-2,Write-ins,Other,76,FALSE
+2022,AZ-6,Juan Ciscomani,Republican,177201,FALSE
+2022,AZ-6,Kirsten Engel,Democratic,171969,FALSE
+2022,AZ-6,Write-ins,Other,113,FALSE
+2022,AZ-7,Raúl Grijalva,Democratic,126418,TRUE
+2022,AZ-7,Luis Pozzolo,Republican,69444,FALSE
+2024,AZ-2,Eli Crane,Republican,221413,TRUE
+2024,AZ-2,Jonathan Nez,Democratic,184963,FALSE
+2024,AZ-2,Write-ins,Other,55,FALSE
+2024,AZ-6,Juan Ciscomani,Republican,215596,TRUE
+2024,AZ-6,Kirsten Engel,Democratic,204774,FALSE
+2024,AZ-6,Athena Eastwood,Green,10850,FALSE
+2024,AZ-7,Raúl Grijalva,Democratic,171954,TRUE
+2024,AZ-7,Daniel Butierez,Republican,99057,FALSE
