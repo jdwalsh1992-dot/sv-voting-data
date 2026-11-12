@@ -1,0 +1,66 @@
+# Rebuild the Shinylive site (build_site.R) and deploy it to GitHub Pages
+# whenever the app, its data or the build script changes on main.
+name: Build and deploy site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - app.R
+      - R/**
+      - data/**
+      - build_site.R
+      - .github/workflows/pages.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      # shinylive::export() checks the app's packages against their webR
+      # versions, so install them too (binaries from Posit Public Package Manager)
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::shinylive
+            any::shiny
+            any::bslib
+            any::dplyr
+            any::tidyr
+            any::ggplot2
+            any::DT
+            any::leaflet
+            any::sf
+            any::plotly
+
+      - name: Export site
+        run: Rscript build_site.R
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: docs
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

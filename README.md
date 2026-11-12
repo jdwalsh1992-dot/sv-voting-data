@@ -19,9 +19,11 @@ shiny::runApp()
 
 ## Rebuild the website
 
-The GitHub Pages site in `docs/` is a [Shinylive](https://posit-dev.github.io/r-shinylive/)
-export: the app runs in the browser with webR, with no server. After changing
-the app or data, rebuild it and commit `docs/`:
+The GitHub Pages site is a [Shinylive](https://posit-dev.github.io/r-shinylive/)
+export: the app runs in the browser with webR, with no server. A GitHub Action
+(`.github/workflows/pages.yml`) rebuilds and deploys it automatically whenever
+`app.R`, `R/`, `data/` or `build_site.R` changes on `main`, taking a few
+minutes. To build it locally (into `docs/`, which isn't committed):
 
 ```r
 install.packages("shinylive")

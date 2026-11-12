@@ -1,5 +1,7 @@
 # Build the static GitHub Pages site in docs/ with Shinylive (R runs in the
-# visitor's browser through webR, so no server is needed).
+# visitor's browser through webR, so no server is needed). The GitHub Action in
+# .github/workflows/pages.yml runs this on every push to main and deploys docs/;
+# docs/ itself is not committed.
 #
 # Run from the project root:  Rscript build_site.R
 # Preview locally:            Rscript -e 'httpuv::runStaticServer("docs", port = 8008)'
