@@ -14,6 +14,7 @@ time. See README.md for the user-facing description and caveats.
 ```sh
 Rscript -e 'shiny::runApp(port = 8765, launch.browser = TRUE)'   # run the app
 Rscript data-raw/build_data.R                                     # rebuild data/ (needs internet, ~1–2 min with cache)
+Rscript data-raw/fetch_photos.R                                   # re-download candidate photos + credits (needs internet)
 Rscript build_site.R                                              # build the Pages site into docs/ locally (Shinylive)
 Rscript -e 'httpuv::runStaticServer("docs", port = 8008)'          # preview docs/ locally
 ```
@@ -50,6 +51,12 @@ of geographies: 3 districts, 14 counties, about 670–690 precincts.
   - `preliminary_2026.csv`: unofficial 2026 House results (district level, D/R only).
   - `districts.csv`: district descriptions and current representatives.
   - `precinct_match_report.csv`: 2022/2024 precinct name-match rate by county.
+  - `candidate_photos.csv`: candidate name → `www/candidates/*.jpg` photo, with artist, license and Commons link
+    (shown on the Results tab and credited in the sidebar).
+- `www/candidates/`: candidate photos, 250 px wide, from `data-raw/fetch_photos.R`. Only public-domain / CC0 / CC BY(-SA)
+  images are kept; candidates without one get an initials avatar. To add a candidate (e.g. a new 2026 name), add it to
+  the `candidates` map in that script: the key is the name exactly as it appears in the results, and name variants such
+  as "Donald J Trump" point to the same article.
 
 ## Conventions
 

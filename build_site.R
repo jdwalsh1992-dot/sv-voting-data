@@ -11,7 +11,7 @@
 stage <- file.path(tempdir(), "sv-app")
 unlink(stage, recursive = TRUE)
 dir.create(stage)
-file.copy(c("app.R", "R", "data"), stage, recursive = TRUE)
+file.copy(c("app.R", "R", "data", "www"), stage, recursive = TRUE)
 
 unlink("docs", recursive = TRUE)
 shinylive::export(stage, "docs")

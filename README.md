@@ -56,8 +56,10 @@ of the Secretary of State canvass.
 - **Trends:** interactive line chart of the R − D margin over time for each
   district and up to five counties. A bar chart and a table show the +/- swing
   for every district and county.
-- **Results / Compare districts:** candidate results for the focus district,
-  and the vote share by party for all three districts.
+- **Results / Compare districts:** candidate cards with photos and a results
+  chart for the focus district, and the vote share by party for all three
+  districts. Photos are public-domain or Creative Commons images from Wikimedia
+  Commons (credits in the sidebar, rebuilt with `Rscript data-raw/fetch_photos.R`).
 - **Data:** a filterable table you can download as CSV, at any level.
 
 ## Data sources and caveats

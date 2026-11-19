@@ -66,17 +66,106 @@ district_colors <- c("AZ-6" = "#6A3D9A", "AZ-7" = "#1B9E77", "AZ-2" = "#D95F02")
 county_colors   <- c("#E7298A", "#66A61E", "#E6AB02", "#A6761D", "#666666")
 
 SIERRA_VISTA <- c(lng = -110.3037, lat = 31.5545)
+
+# Freely licensed candidate photos (www/candidates/), from data-raw/fetch_photos.R
+candidate_photos <- read.csv("data/candidate_photos.csv", stringsAsFactors = FALSE)
+# One credit per photo, under the shortest name variant ("Donald Trump", not "Donald J Trump")
+photo_credits <- candidate_photos[order(nchar(candidate_photos$candidate)), ]
+photo_credits <- photo_credits[!duplicated(photo_credits$photo), ]
+photo_credits <- photo_credits[order(photo_credits$candidate), ]
+
+# ---- Look and feel ------------------------------------------------------------
+
+FONT_STACK <- "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif"
+
+app_theme <- bs_theme(
+  version = 5,
+  bg = "#ffffff", fg = "#0f172a",
+  primary = "#4f46e5", secondary = "#64748b",
+  # font_link() only links the stylesheet, so nothing is downloaded at build time
+  # (font_google() would try to fetch the font files, which fails under webR)
+  base_font = font_link("Inter", href = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"),
+  heading_font = font_link("Inter", href = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"),
+  font_scale = 0.95,
+  "border-radius" = "0.6rem",
+  "card-border-color" = "#e2e8f0",
+  "card-cap-bg" = "#ffffff",
+  "bslib-sidebar-bg" = "#f8fafc"
+) |>
+  bs_add_rules("
+    body { background: #f1f5f9; }
+    .navbar, .bslib-page-title { background: #ffffff !important; border-bottom: 1px solid #e2e8f0; }
+    .app-title { display: flex; align-items: center; gap: .75rem; }
+    .app-logo { width: 2.1rem; height: 2.1rem; border-radius: .55rem; display: grid; place-items: center;
+                color: #fff; background: linear-gradient(135deg, #4f46e5, #c026d3); font-size: 1rem; }
+    .app-name { font-weight: 700; font-size: 1.1rem; letter-spacing: -.01em; line-height: 1.2; }
+    .app-tagline { font-size: .78rem; color: #64748b; font-weight: 500; }
+    .card { box-shadow: 0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.05); }
+    .card-header { font-weight: 600; }
+    .card-footer { background: #ffffff; }
+    .nav-tabs { border-bottom: 1px solid #e2e8f0; }
+    .nav-tabs .nav-link { border: 0; color: #64748b; font-weight: 500; padding: .7rem 1rem; }
+    .nav-tabs .nav-link:hover { color: #0f172a; }
+    .nav-tabs .nav-link.active { color: #4f46e5; background: transparent;
+                                 box-shadow: inset 0 -2px 0 #4f46e5; }
+    .bslib-value-box { border: 0; }
+    .bslib-value-box .value-box-title { font-size: .8rem; font-weight: 500; opacity: .8;
+                                        text-transform: uppercase; letter-spacing: .04em; }
+    .bslib-value-box .value-box-value { font-weight: 700; letter-spacing: -.02em; }
+    .sidebar-section { font-size: .72rem; font-weight: 600; text-transform: uppercase;
+                       letter-spacing: .06em; color: #94a3b8; margin: .25rem 0 -.25rem; }
+    .sidebar .form-label, .sidebar .control-label { font-weight: 500; font-size: .85rem; }
+    .district-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: .6rem; padding: .75rem .85rem; }
+    .district-card h6 { font-weight: 600; margin-bottom: .4rem; }
+    .leaflet-container { font-family: inherit; }
+    .leaflet-popup-content-wrapper, .leaflet-control-layers { border-radius: .6rem; }
+    table.dataTable { font-size: .85rem; }
+    .candidate-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+                      gap: .9rem; padding: .25rem 0 1rem; }
+    .candidate-card { position: relative; display: flex; align-items: center; gap: .85rem; padding: .85rem;
+                      background: #fff; border: 1px solid #e2e8f0; border-radius: .75rem;
+                      border-top: 4px solid var(--party); }
+    .candidate-card.is-winner { box-shadow: 0 4px 18px rgba(15,23,42,.08); }
+    .candidate-photo, .candidate-avatar { flex: none; width: 64px; height: 64px; border-radius: 50%;
+                                          box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--party); }
+    .candidate-photo { object-fit: cover; object-position: center 20%; }
+    .candidate-avatar { display: grid; place-items: center; background: var(--party); color: #fff;
+                        font-weight: 600; font-size: 1.2rem; }
+    .candidate-name { font-weight: 600; line-height: 1.2; }
+    .candidate-party { font-size: .75rem; font-weight: 600; color: var(--party); }
+    .candidate-share { font-size: 1.35rem; font-weight: 700; letter-spacing: -.02em; line-height: 1.1; margin-top: .2rem; }
+    .candidate-votes { font-size: .78rem; color: #64748b; }
+    .candidate-badge { position: absolute; top: .55rem; right: .6rem; font-size: .68rem; font-weight: 600;
+                       padding: .1rem .45rem; border-radius: 999px; background: #dcfce7; color: #166534; }
+    .photo-credits li { margin-bottom: .2rem; }
+  ")
+
+# Shared plotly styling so every chart matches the page
+plotly_style <- function(p) {
+  p |>
+    layout(font = list(family = FONT_STACK, color = "#334155"),
+           paper_bgcolor = "rgba(0,0,0,0)", plot_bgcolor = "rgba(0,0,0,0)",
+           hoverlabel = list(font = list(family = FONT_STACK), bordercolor = "#e2e8f0")) |>
+    config(displaylogo = FALSE)
+}
 study_bbox <- unname(st_bbox(districts_sf))
 
 # ---- UI ---------------------------------------------------------------------
 
 ui <- page_sidebar(
-  title = "Sierra Vista Area Election Explorer",
-  theme = bs_theme(version = 5, bootswatch = "flatly"),
+  title = div(
+    class = "app-title",
+    div(class = "app-logo", icon("check-to-slot")),
+    div(div(class = "app-name", "Sierra Vista Area Election Explorer"),
+        div(class = "app-tagline", "AZ-2 · AZ-6 · AZ-7 — district, county and precinct results, 2016–2026"))
+  ),
+  window_title = "Sierra Vista Area Election Explorer",
+  theme = app_theme,
   fillable = TRUE,
 
   sidebar = sidebar(
-    width = 300,
+    width = 310,
+    div(class = "sidebar-section", "Election"),
     selectInput("race", "Race", choices = RACES),
     radioButtons("mode", "View",
                  choices = c("Single election" = "single", "Change between years" = "change")),
@@ -91,28 +180,48 @@ ui <- page_sidebar(
         selectInput("to", "To", choices = NULL)
       )
     ),
+    div(class = "sidebar-section", "Map"),
     radioButtons("level", "Map level", inline = TRUE,
                  choices = c("District" = "district", "County" = "county", "Precinct" = "precinct")),
     selectInput("focus", "Focus district",
                 choices = setNames(DISTRICTS, paste0(DISTRICTS, " — ", district_info$relation)),
                 selected = "AZ-6"),
     actionButton("zoom_focus", "Zoom map to district", icon = icon("magnifying-glass-location"),
-                 class = "btn-sm btn-outline-secondary"),
-    hr(),
-    uiOutput("district_info"),
-    p(class = "small text-muted",
+                 class = "btn-sm btn-outline-primary w-100"),
+    div(class = "district-card", uiOutput("district_info")),
+    accordion(
+      open = FALSE,
+      accordion_panel(
+        "About the data", icon = icon("circle-info"),
+        p(class = "small text-muted mb-0",
       "Sources: AZ Secretary of State canvass; MIT Election Data + Science Lab (2022, 2024",
       "precinct returns); Voting and Election Science Team (2016–2020 precinct shapes);",
       "NYT 2024 precinct shapes; U.S. Census TIGER boundaries.",
       "2026 House results are unofficial (as reported Nov 9–10, 2026).",
       "District lines are the current (2022) map.")
+      ),
+      accordion_panel(
+        "Photo credits", icon = icon("camera"),
+        tags$ul(
+          class = "photo-credits small text-muted ps-3 mb-0",
+          lapply(seq_len(nrow(photo_credits)), function(i) {
+            r <- photo_credits[i, ]
+            tags$li(r$candidate, ": ", r$artist, ", ", tags$a(r$license, href = r$source, target = "_blank"))
+          })
+        ),
+        p(class = "small text-muted mt-2 mb-0", "Via Wikimedia Commons.")
+      )
+    )
   ),
 
   layout_columns(
     fill = FALSE,
-    value_box(textOutput("vb1_title"), textOutput("vb1"), showcase = icon("trophy")),
-    value_box(textOutput("vb2_title"), textOutput("vb2"), showcase = icon("scale-balanced")),
-    value_box(textOutput("vb3_title"), textOutput("vb3"), showcase = icon("check-to-slot"))
+    value_box(textOutput("vb1_title"), textOutput("vb1"), showcase = icon("trophy"),
+              theme = value_box_theme(bg = "#eef2ff", fg = "#3730a3")),
+    value_box(textOutput("vb2_title"), textOutput("vb2"), showcase = icon("scale-balanced"),
+              theme = value_box_theme(bg = "#fdf4ff", fg = "#86198f")),
+    value_box(textOutput("vb3_title"), textOutput("vb3"), showcase = icon("check-to-slot"),
+              theme = value_box_theme(bg = "#ecfeff", fg = "#155e75"))
   ),
 
   navset_card_tab(
@@ -165,6 +274,7 @@ ui <- page_sidebar(
     ),
     nav_panel(
       "Results",
+      uiOutput("candidate_cards"),
       plotlyOutput("result_plot")
     ),
     nav_panel(
@@ -213,7 +323,7 @@ server <- function(input, output, session) {
     tagList(
       h6(d$name),
       p(class = "small mb-1", strong("Representative: "), d$representative),
-      p(class = "small", d$area)
+      p(class = "small text-muted mb-0", d$area)
     )
   })
 
@@ -475,7 +585,7 @@ server <- function(input, output, session) {
         legend = list(orientation = "h", y = -0.15),
         hovermode = "closest"
       ) |>
-      config(displaylogo = FALSE)
+      plotly_style()
   })
 
   swing_years <- reactive({
@@ -515,7 +625,7 @@ server <- function(input, output, session) {
                           zerolinewidth = 2, zerolinecolor = "#555"),
              yaxis = list(title = ""),
              bargap = 0.3) |>
-      config(displaylogo = FALSE)
+      plotly_style()
   })
 
   output$swing_table <- renderDT({
@@ -535,11 +645,47 @@ server <- function(input, output, session) {
   })
 
   # -- Results / Compare -------------------------------------------------------------
-  output$result_plot <- renderPlotly({
-    df <- results |>
+  focus_results <- reactive({
+    results |>
       filter(level == "district", geo_id == input$focus, race == input$race, year == shown_year()) |>
       group_by(candidate, party) |> summarise(votes = sum(votes), .groups = "drop") |>
-      mutate(share = votes / sum(votes)) |>
+      mutate(share = votes / sum(votes))
+  })
+
+  output$candidate_cards <- renderUI({
+    df <- focus_results() |>
+      # Cards only for named candidates with at least 1% (skips stray write-ins)
+      filter(!candidate %in% c("Other", "Write-ins"), share >= 0.01) |>
+      arrange(desc(votes))
+    req(nrow(df) > 0)
+    badge <- if (is_prelim(shown_year())) "Leading" else "Winner"
+    div(
+      class = "candidate-grid",
+      lapply(seq_len(nrow(df)), function(i) {
+        r <- df[i, ]
+        ph <- candidate_photos[candidate_photos$candidate == r$candidate, ]
+        words <- strsplit(r$candidate, " ")[[1]]
+        initials <- paste0(substr(words[1], 1, 1), substr(words[length(words)], 1, 1))
+        div(
+          class = paste("candidate-card", if (i == 1) "is-winner"),
+          style = sprintf("--party: %s;", party_colors[[if (r$party %in% names(party_colors)) r$party else "Other"]]),
+          if (i == 1) span(class = "candidate-badge", badge),
+          if (nrow(ph)) tags$img(class = "candidate-photo", src = ph$photo[1], alt = r$candidate,
+                                 title = paste0("Photo: ", ph$artist[1], " (", ph$license[1], ")"))
+          else div(class = "candidate-avatar", initials),
+          div(
+            div(class = "candidate-name", r$candidate),
+            div(class = "candidate-party", r$party),
+            div(class = "candidate-share", sprintf("%.1f%%", 100 * r$share)),
+            div(class = "candidate-votes", paste(format(round(r$votes), big.mark = ","), "votes"))
+          )
+        )
+      })
+    )
+  })
+
+  output$result_plot <- renderPlotly({
+    df <- focus_results() |>
       arrange(votes) |>
       mutate(candidate = factor(candidate, levels = candidate))
     validate(need(nrow(df) > 0, "No data for this selection."))
@@ -552,9 +698,9 @@ server <- function(input, output, session) {
       scale_x_continuous(labels = scales::percent, limits = c(0, 1)) +
       labs(x = NULL, y = NULL, fill = NULL,
            title = sprintf("%s %s, %s", input$focus, names(RACES)[RACES == input$race], shown_year())) +
-      theme_minimal(base_size = 14) +
+      theme_minimal(base_size = 14, base_family = "Inter") +
       theme(panel.grid.major.y = element_blank())
-    ggplotly(p, tooltip = "text") |> config(displaylogo = FALSE)
+    ggplotly(p, tooltip = "text") |> plotly_style()
   })
 
   output$compare_plot <- renderPlotly({
@@ -574,9 +720,9 @@ server <- function(input, output, session) {
       scale_x_continuous(labels = scales::percent, expand = c(0, 0)) +
       labs(x = "Vote share", y = NULL, fill = NULL,
            title = sprintf("%s vote share by party, %s", names(RACES)[RACES == input$race], shown_year())) +
-      theme_minimal(base_size = 14) +
+      theme_minimal(base_size = 14, base_family = "Inter") +
       theme(panel.grid.major.y = element_blank())
-    ggplotly(p, tooltip = "text") |> config(displaylogo = FALSE)
+    ggplotly(p, tooltip = "text") |> plotly_style()
   })
 
   # -- Data ------------------------------------------------------------------------------

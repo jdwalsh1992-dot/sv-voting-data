@@ -9,6 +9,7 @@ on:
       - app.R
       - R/**
       - data/**
+      - www/**
       - build_site.R
       - .github/workflows/pages.yml
   workflow_dispatch:
