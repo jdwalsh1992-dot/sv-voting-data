@@ -80,72 +80,112 @@ FONT_STACK <- "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif"
 
 app_theme <- bs_theme(
   version = 5,
-  bg = "#ffffff", fg = "#0f172a",
-  primary = "#4f46e5", secondary = "#64748b",
+  bg = "#ffffff", fg = "#111827",
+  primary = "#111827", secondary = "#6b7280",
   # font_link() only links the stylesheet, so nothing is downloaded at build time
   # (font_google() would try to fetch the font files, which fails under webR)
   base_font = font_link("Inter", href = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"),
   heading_font = font_link("Inter", href = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"),
-  font_scale = 0.95,
-  "border-radius" = "0.6rem",
-  "card-border-color" = "#e2e8f0",
+  font_scale = 0.93,
+  "border-radius" = "0.5rem",
+  "border-color" = "#e5e7eb",
+  "card-border-color" = "#e5e7eb",
   "card-cap-bg" = "#ffffff",
-  "bslib-sidebar-bg" = "#f8fafc"
+  "bslib-sidebar-bg" = "#ffffff",
+  "input-border-color" = "#e5e7eb",
+  "focus-ring-color" = "rgba(17,24,39,.15)"
 ) |>
   bs_add_rules("
-    body { background: #f1f5f9; }
-    .navbar, .bslib-page-title { background: #ffffff !important; border-bottom: 1px solid #e2e8f0; }
-    .app-title { display: flex; align-items: center; gap: .75rem; }
-    .app-logo { width: 2.1rem; height: 2.1rem; border-radius: .55rem; display: grid; place-items: center;
-                color: #fff; background: linear-gradient(135deg, #4f46e5, #c026d3); font-size: 1rem; }
-    .app-name { font-weight: 700; font-size: 1.1rem; letter-spacing: -.01em; line-height: 1.2; }
-    .app-tagline { font-size: .78rem; color: #64748b; font-weight: 500; }
-    .card { box-shadow: 0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.05); }
-    .card-header { font-weight: 600; }
-    .card-footer { background: #ffffff; }
-    .nav-tabs { border-bottom: 1px solid #e2e8f0; }
-    .nav-tabs .nav-link { border: 0; color: #64748b; font-weight: 500; padding: .7rem 1rem; }
-    .nav-tabs .nav-link:hover { color: #0f172a; }
-    .nav-tabs .nav-link.active { color: #4f46e5; background: transparent;
-                                 box-shadow: inset 0 -2px 0 #4f46e5; }
-    .bslib-value-box { border: 0; }
-    .bslib-value-box .value-box-title { font-size: .8rem; font-weight: 500; opacity: .8;
-                                        text-transform: uppercase; letter-spacing: .04em; }
-    .bslib-value-box .value-box-value { font-weight: 700; letter-spacing: -.02em; }
-    .sidebar-section { font-size: .72rem; font-weight: 600; text-transform: uppercase;
-                       letter-spacing: .06em; color: #94a3b8; margin: .25rem 0 -.25rem; }
-    .sidebar .form-label, .sidebar .control-label { font-weight: 500; font-size: .85rem; }
-    .district-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: .6rem; padding: .75rem .85rem; }
-    .district-card h6 { font-weight: 600; margin-bottom: .4rem; }
-    .leaflet-container { font-family: inherit; }
-    .leaflet-popup-content-wrapper, .leaflet-control-layers { border-radius: .6rem; }
-    table.dataTable { font-size: .85rem; }
-    .candidate-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-                      gap: .9rem; padding: .25rem 0 1rem; }
-    .candidate-card { position: relative; display: flex; align-items: center; gap: .85rem; padding: .85rem;
-                      background: #fff; border: 1px solid #e2e8f0; border-radius: .75rem;
-                      border-top: 4px solid var(--party); }
-    .candidate-card.is-winner { box-shadow: 0 4px 18px rgba(15,23,42,.08); }
-    .candidate-photo, .candidate-avatar { flex: none; width: 64px; height: 64px; border-radius: 50%;
-                                          box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--party); }
-    .candidate-photo { object-fit: cover; object-position: center 20%; }
-    .candidate-avatar { display: grid; place-items: center; background: var(--party); color: #fff;
-                        font-weight: 600; font-size: 1.2rem; }
-    .candidate-name { font-weight: 600; line-height: 1.2; }
-    .candidate-party { font-size: .75rem; font-weight: 600; color: var(--party); }
-    .candidate-share { font-size: 1.35rem; font-weight: 700; letter-spacing: -.02em; line-height: 1.1; margin-top: .2rem; }
-    .candidate-votes { font-size: .78rem; color: #64748b; }
-    .candidate-badge { position: absolute; top: .55rem; right: .6rem; font-size: .68rem; font-weight: 600;
-                       padding: .1rem .45rem; border-radius: 999px; background: #dcfce7; color: #166534; }
+    body { background: #fafafa; letter-spacing: -.005em; -webkit-font-smoothing: antialiased; }
+    .bslib-page-sidebar > .navbar { background: #0b0f19 !important; border: 0; padding-block: .6rem; }
+    .app-title { display: flex; align-items: center; gap: .7rem; color: #fff; }
+    .app-logo { width: 1.9rem; height: 1.9rem; border-radius: .45rem; display: grid; place-items: center;
+                border: 1px solid rgba(255,255,255,.25); font-size: .8rem; font-weight: 700; letter-spacing: .02em; }
+    .app-name { font-weight: 600; font-size: 1rem; letter-spacing: -.015em; line-height: 1.2; }
+    .app-tagline { font-size: .74rem; color: #9ca3af; font-weight: 400; }
+    .sidebar { border-right: 1px solid #e5e7eb; }
+    .card { box-shadow: none; }
+    .card-header { font-weight: 600; font-size: .9rem; border-bottom-color: #f3f4f6; }
+    .card-footer { background: #ffffff; border-top-color: #f3f4f6; }
+    .btn-primary, .btn-outline-primary:hover { background: #111827; border-color: #111827; }
+
+    /* Tabs as a segmented control */
+    .nav-tabs { border: 0; gap: .15rem; background: #f3f4f6; border-radius: .6rem; padding: .2rem;
+                margin: .1rem; width: fit-content; }
+    .nav-tabs .nav-link { border: 0; border-radius: .45rem; color: #6b7280; font-weight: 500;
+                          font-size: .85rem; padding: .35rem .9rem; }
+    .nav-tabs .nav-link:hover { color: #111827; }
+    .nav-tabs .nav-link.active { color: #111827; background: #fff;
+                                 box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 0 0 1px rgba(0,0,0,.04); }
+    .card-header:has(> .nav-tabs) { background: #fff; border-bottom: 1px solid #f3f4f6; }
+
+    /* Radio buttons as segmented controls (Shiny markup: label.radio-inline > input + span) */
+    .segmented .shiny-input-container { width: 100%; }
+    .segmented .shiny-options-group { display: flex; background: #f3f4f6; border-radius: .55rem; padding: .2rem; gap: .15rem; }
+    .segmented .radio-inline { flex: 1; margin: 0; padding: 0; }
+    .segmented .radio-inline input { position: absolute; opacity: 0; pointer-events: none; }
+    .segmented .radio-inline span { display: block; text-align: center; cursor: pointer; border-radius: .4rem;
+                                    padding: .3rem .4rem; font-size: .8rem; font-weight: 500; color: #6b7280; }
+    .segmented .radio-inline input:checked + span { background: #fff; color: #111827;
+                                    box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 0 0 1px rgba(0,0,0,.04); }
+    .segmented .radio-inline input:focus-visible + span { outline: 2px solid #111827; outline-offset: 1px; }
+    .segmented.inline-w-auto .shiny-input-container { width: auto; }
+    .segmented.inline-w-auto .shiny-options-group { width: fit-content; }
+    .segmented.inline-w-auto .radio-inline { flex: none; }
+    .segmented.inline-w-auto .radio-inline span { padding-inline: .9rem; }
+
+    /* Stat tiles: plain white, big tabular numbers */
+    .bslib-value-box { border: 1px solid #e5e7eb; background: #fff; }
+    .bslib-value-box .value-box-title { font-size: .72rem; font-weight: 500; color: #6b7280;
+                                        text-transform: uppercase; letter-spacing: .06em; }
+    .bslib-value-box .value-box-value { font-weight: 600; letter-spacing: -.03em; color: #111827;
+                                        font-variant-numeric: tabular-nums; }
+
+    .sidebar-section { font-size: .68rem; font-weight: 600; text-transform: uppercase;
+                       letter-spacing: .08em; color: #9ca3af; margin: .35rem 0 -.35rem; }
+    .sidebar .form-label, .sidebar .control-label { font-weight: 500; font-size: .8rem; color: #374151; }
+    .sidebar .accordion { --bs-accordion-border-color: #f3f4f6; font-size: .85rem; }
+    .district-card { background: #fafafa; border: 1px solid #f3f4f6; border-radius: .5rem; padding: .75rem .85rem; }
+    .district-card h6 { font-weight: 600; font-size: .85rem; margin-bottom: .35rem; }
+    .leaflet-container { font-family: inherit; background: #f5f5f4; }
+    .leaflet-popup-content-wrapper, .leaflet-control-layers { border-radius: .5rem; box-shadow: 0 4px 16px rgba(0,0,0,.12); }
+    .leaflet-bar { border: 1px solid #e5e7eb !important; box-shadow: none !important; }
+    .leaflet-control .legend, .info.legend { border-radius: .5rem; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+    table.dataTable { font-size: .82rem; font-variant-numeric: tabular-nums; }
+    table.dataTable thead th { font-weight: 600; color: #374151; border-bottom: 1px solid #e5e7eb !important; }
+
+    /* Candidate cards */
+    .candidate-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                      gap: .75rem; padding: .5rem 0 1rem; }
+    .candidate-card { position: relative; display: flex; align-items: center; gap: .9rem; padding: .9rem;
+                      background: #fff; border: 1px solid #e5e7eb; border-radius: .65rem; }
+    .candidate-card.is-winner { border-color: #111827; }
+    .candidate-photo, .candidate-avatar { flex: none; width: 56px; height: 56px; border-radius: 50%;
+                                          box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px var(--party); }
+    .candidate-photo { object-fit: cover; object-position: center 20%; filter: saturate(.9); }
+    .candidate-avatar { display: grid; place-items: center; background: #f3f4f6; color: #374151;
+                        font-weight: 600; font-size: 1.05rem; }
+    .candidate-name { font-weight: 600; font-size: .92rem; line-height: 1.2; }
+    .candidate-party { font-size: .72rem; font-weight: 500; color: #6b7280; display: flex; align-items: center; gap: .3rem; }
+    .candidate-party::before { content: ''; width: .5rem; height: .5rem; border-radius: 50%; background: var(--party); }
+    .candidate-share { font-size: 1.4rem; font-weight: 600; letter-spacing: -.03em; line-height: 1.1;
+                       margin-top: .25rem; font-variant-numeric: tabular-nums; }
+    .candidate-votes { font-size: .75rem; color: #6b7280; font-variant-numeric: tabular-nums; }
+    .candidate-badge { position: absolute; top: .6rem; right: .65rem; font-size: .65rem; font-weight: 600;
+                       padding: .12rem .5rem; border-radius: 999px; background: #111827; color: #fff;
+                       letter-spacing: .02em; }
     .photo-credits li { margin-bottom: .2rem; }
   ")
 
 # Shared plotly styling so every chart matches the page
 plotly_style <- function(p) {
   p |>
-    layout(font = list(family = FONT_STACK, color = "#334155"),
+    layout(font = list(family = FONT_STACK, color = "#374151"),
            paper_bgcolor = "rgba(0,0,0,0)", plot_bgcolor = "rgba(0,0,0,0)",
-           hoverlabel = list(font = list(family = FONT_STACK), bordercolor = "#e2e8f0")) |>
+           xaxis = list(gridcolor = "#f3f4f6", linecolor = "#e5e7eb"),
+           yaxis = list(gridcolor = "#f3f4f6", linecolor = "#e5e7eb"),
+           hoverlabel = list(font = list(family = FONT_STACK, color = "#111827"),
+                             bgcolor = "#ffffff", bordercolor = "#e5e7eb")) |>
     config(displaylogo = FALSE)
 }
 study_bbox <- unname(st_bbox(districts_sf))
@@ -155,7 +195,7 @@ study_bbox <- unname(st_bbox(districts_sf))
 ui <- page_sidebar(
   title = div(
     class = "app-title",
-    div(class = "app-logo", icon("check-to-slot")),
+    div(class = "app-logo", "SV"),
     div(div(class = "app-name", "Sierra Vista Area Election Explorer"),
         div(class = "app-tagline", "AZ-2 · AZ-6 · AZ-7 — district, county and precinct results, 2016–2026"))
   ),
@@ -167,8 +207,9 @@ ui <- page_sidebar(
     width = 310,
     div(class = "sidebar-section", "Election"),
     selectInput("race", "Race", choices = RACES),
-    radioButtons("mode", "View",
-                 choices = c("Single election" = "single", "Change between years" = "change")),
+    div(class = "segmented",
+        radioButtons("mode", "View", inline = TRUE,
+                     choices = c("Single year" = "single", "Change" = "change"))),
     conditionalPanel(
       "input.mode == 'single'",
       selectInput("year", "Election year", choices = NULL)
@@ -181,13 +222,14 @@ ui <- page_sidebar(
       )
     ),
     div(class = "sidebar-section", "Map"),
-    radioButtons("level", "Map level", inline = TRUE,
-                 choices = c("District" = "district", "County" = "county", "Precinct" = "precinct")),
+    div(class = "segmented",
+        radioButtons("level", "Map level", inline = TRUE,
+                     choices = c("District" = "district", "County" = "county", "Precinct" = "precinct"))),
     selectInput("focus", "Focus district",
                 choices = setNames(DISTRICTS, paste0(DISTRICTS, " — ", district_info$relation)),
                 selected = "AZ-6"),
     actionButton("zoom_focus", "Zoom map to district", icon = icon("magnifying-glass-location"),
-                 class = "btn-sm btn-outline-primary w-100"),
+                 class = "btn-sm btn-outline-secondary w-100"),
     div(class = "district-card", uiOutput("district_info")),
     accordion(
       open = FALSE,
@@ -216,12 +258,9 @@ ui <- page_sidebar(
 
   layout_columns(
     fill = FALSE,
-    value_box(textOutput("vb1_title"), textOutput("vb1"), showcase = icon("trophy"),
-              theme = value_box_theme(bg = "#eef2ff", fg = "#3730a3")),
-    value_box(textOutput("vb2_title"), textOutput("vb2"), showcase = icon("scale-balanced"),
-              theme = value_box_theme(bg = "#fdf4ff", fg = "#86198f")),
-    value_box(textOutput("vb3_title"), textOutput("vb3"), showcase = icon("check-to-slot"),
-              theme = value_box_theme(bg = "#ecfeff", fg = "#155e75"))
+    value_box(textOutput("vb1_title"), textOutput("vb1")),
+    value_box(textOutput("vb2_title"), textOutput("vb2")),
+    value_box(textOutput("vb3_title"), textOutput("vb3"))
   ),
 
   navset_card_tab(
@@ -285,8 +324,9 @@ ui <- page_sidebar(
       "Data",
       layout_columns(
         fill = FALSE,
-        radioButtons("data_level", NULL, inline = TRUE,
-                     choices = c("District" = "district", "County" = "county", "Precinct" = "precinct")),
+        div(class = "segmented inline-w-auto",
+            radioButtons("data_level", NULL, inline = TRUE,
+                         choices = c("District" = "district", "County" = "county", "Precinct" = "precinct"))),
         div(class = "text-end", downloadButton("download", "Download CSV", class = "btn-sm"))
       ),
       DTOutput("table")

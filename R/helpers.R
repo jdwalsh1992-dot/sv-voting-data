@@ -54,10 +54,10 @@ fmt_swing <- function(x, digits = 1) {
                        ifelse(x > 0, " pts toward R", " pts toward D"))))
 }
 
-# Diverging blue <-> red scale centred at 0, symmetric around +/- limit.
+# Blue -> purple -> red scale centred at 0 (purple = even), symmetric around +/- limit.
 # Pass values through squish() first so anything past the limit takes the end colour.
 margin_palette <- function(limit) {
-  leaflet::colorNumeric(c("#1F4E9C", "#9DB4DD", "#F7F7F7", "#E8A2A9", "#C8102E"),
+  leaflet::colorNumeric(c("#1F4E9C", "#5A4BA3", "#8A4C9E", "#B03A6E", "#C8102E"),
                         domain = c(-limit, limit), na.color = "#d9d9d9")
 }
 
